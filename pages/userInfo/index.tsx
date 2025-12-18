@@ -9,23 +9,7 @@ import { SessionContext } from "@/lib/usercontext";
 export default function GetUserInfo() {
   const router = useRouter();
   const session = useContext(SessionContext);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!session) return;
-    if (!session.user?.id) {
-      router.push('/login');
-      return;
-    }
-    console.log(session.user.id);
-  }, [router, session]);
-
-
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     grossSalary: "",
     fdIncome: { has: "no", amount: "" },
@@ -37,9 +21,37 @@ export default function GetUserInfo() {
     hraLta: { has: "no", amount: "" },
   });
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (session === undefined) return; // Still loading
+    
+    if (!session || !session.user?.id) {
+      router.push('/login');
+      return;
+    }
+    
+    console.log('Session user ID:', session.user.id);
+    setIsLoading(false);
+  }, [router, session]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    
+    // Check session before submitting
+    if (!session || !session.user?.id) {
+      alert('Session expired. Please login again.');
+      router.push('/login');
+      return;
+    }
+    
+    console.log('Form data:', formData);
+    console.log('User ID:', session.user.id);
+    
     // Save the data to the database
     try {
       const { data, error } = await supabase
@@ -61,22 +73,35 @@ export default function GetUserInfo() {
               formData.homeLoanInterest.has === "yes" ? formData.homeLoanInterest.amount : null,
             hra_lta: formData.hraLta.has === "yes" ? formData.hraLta.amount : null,
           },
-        ).eq('id', session.user.id);
+          { onConflict: 'id' }
+        );
       if (error) {
-        console.error(error);
-        alert("An error occurred while saving the data");
+        console.error('Supabase error:', error);
+        alert(`An error occurred while saving the data: ${error.message}`);
       } else {
+        console.log('Data saved successfully:', data);
         router.push('/dashboard');
       }
     } catch (err) {
-      console.error(err);
-      alert("An error occurred while saving the data");
+      console.error('Catch error:', err);
+      alert(`An error occurred while saving the data: ${err.message}`);
     }
   };
 
   const handleRadioChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
   };
+
+  // Show loading state while checking session
+  if (isLoading) {
+    return (
+      <DefaultLayout>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="text-xl">Loading...</div>
+        </div>
+      </DefaultLayout>
+    );
+  }
 
   return (
     <DefaultLayout>
