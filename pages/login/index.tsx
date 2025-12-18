@@ -10,20 +10,42 @@ export default function LoginPage() {
   const [isVisible, setIsVisible] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
 
-    if (error) {
-      alert(error.message);
-    } else {
+    // Basic client-side validation to avoid empty requests
+    if (!email || !password) {
+      alert('Please enter both email and password.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        // Log the full error to the console for easier debugging of 400s, etc.
+        console.error('Supabase signInWithPassword error:', error);
+        alert(error.message || 'Unable to sign in. Please check your credentials.');
+        return;
+      }
+
+      // Optional: log the session/user for debugging
+      console.log('Supabase sign-in success:', data);
       router.push('/dashboard');
+    } catch (err) {
+      console.error('Unexpected error during sign-in:', err);
+      alert('Something went wrong while signing in. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
   const handleGoogleLogin = async () => {
@@ -92,8 +114,8 @@ export default function LoginPage() {
                     Forgot password?
                   </Link>
                 </div>
-                <Button className="w-full" color="primary" type="submit">
-                  Sign In
+                <Button className="w-full" color="primary" type="submit" isDisabled={loading}>
+                  {loading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </Form>
               <div className="flex items-center gap-4 py-2">
