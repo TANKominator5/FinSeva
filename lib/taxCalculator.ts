@@ -10,7 +10,7 @@ export function calculateTax({ income, deductions, regime }: TaxInput) {
   if (regime === "old") {
     taxableIncome = Math.max(income - deductions, 0);
   } else {
-    taxableIncome = Math.max(income - 50000, 0);
+    taxableIncome = Math.max(income - 75000, 0);
   }
 
   let tax = 0;
