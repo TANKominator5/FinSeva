@@ -28,8 +28,12 @@ export default function GetUserInfo() {
   }, []);
 
   useEffect(() => {
-    if (session === undefined) return; // Still loading
+    // Wait for session to be loaded (undefined means still loading)
+    if (session === undefined) {
+      return;
+    }
     
+    // If no session after loading, redirect to login
     if (!session || !session.user?.id) {
       router.push('/login');
       return;

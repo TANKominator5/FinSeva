@@ -14,9 +14,14 @@ import { SessionContext } from '@/lib/usercontext';
 
 export default function App({ Component, pageProps }: AppProps) {
   
-  const [session, setSession] = React.useState<Session | null>(null);
+  const [session, setSession] = React.useState<Session | null | undefined>(undefined);
 
   React.useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'SIGNED_OUT') {
