@@ -6,28 +6,48 @@ import { MessageSquare } from 'lucide-react';
 import ReactDOMServer from 'react-dom/server'; // Import ReactDOMServer
 import { useCopilotReadable } from "@copilotkit/react-core"; 
 import { supabase } from '@/lib/supabaseClient';
+
 const CopilotSideBarComponent: React.FC = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   const [profile, setProfile] = React.useState<any | null>(null);
+  const [userId, setUserId] = React.useState<string | null>(null);
+
   useCopilotReadable({
-    description: "The current user's information if null then the user is not logged in",
+    description: "The current user's full financial information including first name, last name, gross salary, net salary, income from other sources, and income from house property. All values are shown without masking.",
     value: profile,
   });
+
   React.useEffect(() => {
     const fetchData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        setUserId(user.id);
+        
         const fetchProfile = async () => {
           const { data, error } = await supabase
             .from('profiles')
-            .select('first_name,last_name,gross_salary, income_from_other_sources, income_from_house_property, net_salary')
+            .select('first_name, last_name, gross_salary, income_from_other_sources, income_from_house_property, net_salary')
             .eq('id', user.id)
             .single();
           if (error) {
-            console.error(error);
+            console.error('Error fetching profile:', error);
           } else {
             setProfile(data);
+            
+            // Update vector store via API call (server-side only)
+            if (data && data.first_name && data.last_name) {
+              try {
+                await fetch('/api/update-vector-store', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ userId: user.id, profile: data }),
+                });
+                console.log('User financial context updated in vector store');
+              } catch (vectorError) {
+                console.error('Error updating vector store:', vectorError);
+              }
+            }
           }
         };
 
@@ -49,12 +69,27 @@ const CopilotSideBarComponent: React.FC = () => {
   return (
     <>
       <CopilotPopup
-        instructions={"You are a friendly and knowledgeable assistant for the FinSeva app, guiding users through income tax filing, providing personalized tax recommendations, and connecting them to expert support when needed. Answer in accordance to Indian taxation laws and rules. Respond to user queries in short and conise way. Talk in a human way, not like a robot. Ask and respond in bullet points."}        
+        instructions={`You are a friendly and knowledgeable assistant for the FinSeva app, guiding users through income tax filing, providing personalized tax recommendations, and connecting them to expert support when needed. 
+
+Key Guidelines:
+- Answer in accordance to Indian taxation laws and rules
+- Respond to user queries in short and concise way
+- Talk in a human way, not like a robot
+- Ask and respond in bullet points when appropriate
+- Use the user's financial data that will be provided in the context to give personalized recommendations
+- All financial figures are actual values - use them directly in your responses
+- When discussing the user's finances, address them by their first name to make it more personal
+- Provide specific tax-saving suggestions based on their income levels
+- The user's financial information will be retrieved from the knowledge base and provided in the context`}        
         labels={{
           title: "FinSeva Assistant",
-          initial: "Welcome to FinSeva! Your personal assistant for hassle-free income tax filing and smart tax recommendations. How can I assist you today?",
+          initial: `Welcome to FinSeva${profile?.first_name ? `, ${profile.first_name}` : ''}! Your personal assistant for hassle-free income tax filing and smart tax recommendations. How can I assist you today?`,
         }}
         clickOutsideToClose={true}
+        properties={{
+          userId: userId,
+          userProfile: profile,
+        }}
       />
       {/*
       <style>

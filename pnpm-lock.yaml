@@ -83,6 +83,9 @@ importers:
       framer-motion:
         specifier: ~11.5.6
         version: 11.5.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      groq-sdk:
+        specifier: ^0.37.0
+        version: 0.37.0
       intl-messageformat:
         specifier: ^10.5.0
         version: 10.7.7
@@ -98,6 +101,9 @@ importers:
       next-themes:
         specifier: ^0.2.1
         version: 0.2.1(next@14.2.4(@babel/core@7.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      openai:
+        specifier: ^6.14.0
+        version: 6.14.0(ws@8.18.0)(zod@3.24.1)
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -4315,6 +4321,9 @@ packages:
     resolution: {integrity: sha512-AjqGKbDGUFRKIRCP9tCKiIGHyriz2oHEbPIbEtcSLSs4YjReZOIPQQWek4+6hjw62H9QShXHyaGivGiYVLeYFQ==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
+  groq-sdk@0.37.0:
+    resolution: {integrity: sha512-lT72pcT8b/X5XrzdKf+rWVzUGW1OQSKESmL8fFN5cTbsf02gq6oFam4SVeNtzELt9cYE2Pt3pdGgSImuTbHFDg==}
+
   groq-sdk@0.5.0:
     resolution: {integrity: sha512-RVmhW7qZ+XZoy5fIuSdx/LGQJONpL8MHgZEW7dFwTdgkzStub2XQx6OKv28CHogijdwH41J+Npj/z2jBPu3vmw==}
 
@@ -5130,6 +5139,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
@@ -5215,6 +5225,18 @@ packages:
     peerDependencies:
       ws: ^8.18.0
       zod: ^3.23.8
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
+
+  openai@6.14.0:
+    resolution: {integrity: sha512-ZPD9MG5/sPpyGZ0idRoDK0P5MWEMuXe0Max/S55vuvoxqyEVkN94m9jSpE3YgNgz3WoESFvozs57dxWqAco31w==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.25 || ^4.0
     peerDependenciesMeta:
       ws:
         optional: true
@@ -7125,7 +7147,7 @@ snapshots:
       '@copilotkit/shared': 1.5.11
       '@graphql-yoga/plugin-defer-stream': 3.10.10(graphql-yoga@5.10.10(graphql@16.10.0))(graphql@16.10.0)
       '@langchain/community': 0.0.53(@supabase/postgrest-js@1.17.7)(@supabase/supabase-js@2.47.10)(google-auth-library@8.9.0)(lodash@4.17.21)(openai@4.79.1(ws@8.18.0)(zod@3.24.1))(ws@8.18.0)
-      '@langchain/core': 0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1))
+      '@langchain/core': 0.3.30(openai@6.14.0(ws@8.18.0)(zod@3.24.1))
       '@langchain/google-gauth': 0.1.8(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))(zod@3.24.1)
       '@langchain/langgraph-sdk': 0.0.16
       '@langchain/openai': 0.0.28(ws@8.18.0)
@@ -7602,14 +7624,14 @@ snapshots:
     transitivePeerDependencies:
       - openai
 
-  '@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1))':
+  '@langchain/core@0.3.30(openai@6.14.0(ws@8.18.0)(zod@3.24.1))':
     dependencies:
       '@cfworker/json-schema': 4.1.0
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.16
-      langsmith: 0.2.15(openai@4.79.1(ws@8.18.0)(zod@3.24.1))
+      langsmith: 0.2.15(openai@6.14.0(ws@8.18.0)(zod@3.24.1))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -7621,7 +7643,7 @@ snapshots:
 
   '@langchain/google-common@0.1.8(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))(zod@3.24.1)':
     dependencies:
-      '@langchain/core': 0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1))
+      '@langchain/core': 0.3.30(openai@6.14.0(ws@8.18.0)(zod@3.24.1))
       uuid: 10.0.0
       zod-to-json-schema: 3.24.1(zod@3.24.1)
     transitivePeerDependencies:
@@ -7629,7 +7651,7 @@ snapshots:
 
   '@langchain/google-gauth@0.1.8(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))(zod@3.24.1)':
     dependencies:
-      '@langchain/core': 0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1))
+      '@langchain/core': 0.3.30(openai@6.14.0(ws@8.18.0)(zod@3.24.1))
       '@langchain/google-common': 0.1.8(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))(zod@3.24.1)
       google-auth-library: 8.9.0
     transitivePeerDependencies:
@@ -7657,7 +7679,7 @@ snapshots:
 
   '@langchain/openai@0.3.17(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))(ws@8.18.0)':
     dependencies:
-      '@langchain/core': 0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1))
+      '@langchain/core': 0.3.30(openai@6.14.0(ws@8.18.0)(zod@3.24.1))
       js-tiktoken: 1.0.16
       openai: 4.79.1(ws@8.18.0)(zod@3.24.1)
       zod: 3.24.1
@@ -7668,7 +7690,7 @@ snapshots:
 
   '@langchain/textsplitters@0.1.0(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))':
     dependencies:
-      '@langchain/core': 0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1))
+      '@langchain/core': 0.3.30(openai@6.14.0(ws@8.18.0)(zod@3.24.1))
       js-tiktoken: 1.0.16
 
   '@lukeed/csprng@1.1.0': {}
@@ -11907,6 +11929,18 @@ snapshots:
 
   graphql@16.10.0: {}
 
+  groq-sdk@0.37.0:
+    dependencies:
+      '@types/node': 18.19.71
+      '@types/node-fetch': 2.6.12
+      abort-controller: 3.0.0
+      agentkeepalive: 4.6.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
+
   groq-sdk@0.5.0:
     dependencies:
       '@types/node': 18.19.71
@@ -12296,7 +12330,7 @@ snapshots:
 
   langchain@0.3.11(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))(axios@1.7.9)(openai@4.79.1(ws@8.18.0)(zod@3.24.1))(ws@8.18.0):
     dependencies:
-      '@langchain/core': 0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1))
+      '@langchain/core': 0.3.30(openai@6.14.0(ws@8.18.0)(zod@3.24.1))
       '@langchain/openai': 0.3.17(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))(ws@8.18.0)
       '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.30(openai@4.79.1(ws@8.18.0)(zod@3.24.1)))
       js-tiktoken: 1.0.16
@@ -12337,6 +12371,17 @@ snapshots:
       uuid: 10.0.0
     optionalDependencies:
       openai: 4.79.1(ws@8.18.0)(zod@3.24.1)
+
+  langsmith@0.2.15(openai@6.14.0(ws@8.18.0)(zod@3.24.1)):
+    dependencies:
+      '@types/uuid': 10.0.0
+      commander: 10.0.1
+      p-queue: 6.6.2
+      p-retry: 4.6.2
+      semver: 7.6.3
+      uuid: 10.0.0
+    optionalDependencies:
+      openai: 6.14.0(ws@8.18.0)(zod@3.24.1)
 
   language-subtag-registry@0.3.23: {}
 
@@ -12943,6 +12988,11 @@ snapshots:
       zod: 3.24.1
     transitivePeerDependencies:
       - encoding
+
+  openai@6.14.0(ws@8.18.0)(zod@3.24.1):
+    optionalDependencies:
+      ws: 8.18.0
+      zod: 3.24.1
 
   openapi-types@12.1.3: {}
 
