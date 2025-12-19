@@ -1,6 +1,6 @@
 type TaxInput = {
-  income: number;          // total income
-  deductions: number;      // total deductions
+  income: number; // total income
+  deductions: number; // total deductions
   regime: "old" | "new";
 };
 
@@ -18,30 +18,30 @@ export function calculateTax({ income, deductions, regime }: TaxInput) {
   const slabs = [
     { limit: 300000, rate: 0 },
     { limit: 600000, rate: 0.05 },
-    { limit: 900000, rate: 0.10 },
+    { limit: 900000, rate: 0.1 },
     { limit: 1200000, rate: 0.15 },
-    { limit: 1500000, rate: 0.20 },
-    { limit: Infinity, rate: 0.30 }
+    { limit: 1500000, rate: 0.2 },
+    { limit: Infinity, rate: 0.3 },
   ];
 
   let previousLimit = 0;
 
   for (const slab of slabs) {
     if (taxableIncome > previousLimit) {
-      const amountInSlab =
-        Math.min(taxableIncome, slab.limit) - previousLimit;
+      const amountInSlab = Math.min(taxableIncome, slab.limit) - previousLimit;
       tax += amountInSlab * slab.rate;
       previousLimit = slab.limit;
     }
   }
 
   const cess = tax * 0.04;
-  const totalTax = tax + cess;
+  let totalTax = tax + cess;
+  totalTax = Math.round(totalTax * 100) / 100;
 
   return {
     taxableIncome,
     tax,
     cess,
-    totalTax
+    totalTax,
   };
 }

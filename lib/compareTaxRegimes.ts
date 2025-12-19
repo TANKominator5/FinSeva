@@ -9,13 +9,13 @@ export function compareTaxRegimes({ income, deductions }: CompareInput) {
   const oldRegime = calculateTax({
     income,
     deductions,
-    regime: "old"
+    regime: "old",
   });
 
   const newRegime = calculateTax({
     income,
     deductions,
-    regime: "new"
+    regime: "new",
   });
 
   let betterRegime: "old" | "new";
@@ -24,15 +24,17 @@ export function compareTaxRegimes({ income, deductions }: CompareInput) {
   if (oldRegime.totalTax < newRegime.totalTax) {
     betterRegime = "old";
     savings = newRegime.totalTax - oldRegime.totalTax;
+    savings = Math.round(savings * 100) / 100;
   } else {
     betterRegime = "new";
     savings = oldRegime.totalTax - newRegime.totalTax;
+    savings = Math.round(savings * 100) / 100;
   }
 
   return {
     oldRegime,
     newRegime,
     betterRegime,
-    savings
+    savings,
   };
 }

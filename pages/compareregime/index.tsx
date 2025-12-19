@@ -342,15 +342,23 @@ export default function CompareRegimePage() {
                         : "NEW REGIME"}
                     </Chip>
                   </div>
-                  <div className="text-center py-4 bg-default-50 rounded-lg">
+                  <div className="text-center py-4 bg-default-50 rounded-lg items-center flex flex-col gap-2">
                     <p className="text-sm text-default-500 uppercase font-bold tracking-wider">
                       Projected Savings
                     </p>
-                    <p
-                      className={`text-3xl font-black ${result.savings > 0 ? "text-green-600" : "text-default-400"}`}
-                    >
-                      ₹{result.savings.toLocaleString()}
-                    </p>
+                    <span className="flex items-end font-mono">
+                      <p
+                        className={`text-3xl font-black ${result.savings > 0 ? "text-green-600" : "text-default-400"}`}
+                      >
+                        ₹{result.savings.toLocaleString().split(".")[0]}
+                      </p>
+
+                      <p
+                        className={`text-2xl font-black ${result.savings > 0 ? "text-green-800" : "text-default-400"}`}
+                      >
+                        .{result.savings.toLocaleString().split(".")[1]}
+                      </p>
+                    </span>
                   </div>
                 </div>
               </Card>
