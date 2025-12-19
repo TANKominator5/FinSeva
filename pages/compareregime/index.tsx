@@ -1,6 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import DefaultLayout from "@/layouts/default";
 import { compareTaxRegimes } from "@/lib/compareTaxRegimes";
+import { supabase } from "@/lib/supabaseClient";
+import { SessionContext } from "@/lib/usercontext";
 import {
   Card,
   CardHeader,
@@ -47,6 +49,7 @@ const CustomInput = ({
   />
 );
 export default function CompareRegimePage() {
+  const session = useContext(SessionContext);
   // Income State
   const [grossSalary, setGrossSalary] = useState("");
   const [exemptAllowances, setExemptAllowances] = useState("");
@@ -127,7 +130,7 @@ export default function CompareRegimePage() {
     savingsInterest,
   ]);
 
-  const handleCompare = () => {
+  const handleCompare = async () => {
     if (hasNegativeError) return;
 
     // Aggregation
@@ -141,6 +144,33 @@ export default function CompareRegimePage() {
       deductions: totalDeductions,
     });
     setResult(res);
+
+    if (session?.user?.id) {
+      try {
+        const { error } = await supabase.from("tax_calculations").upsert({
+          user_id: session.user.id,
+          financial_year: "2024-2025",
+          old_taxable_income: res.oldRegime.taxableIncome,
+          old_tax: res.oldRegime.tax,
+          old_cess: res.oldRegime.cess,
+          old_total_tax: res.oldRegime.totalTax,
+          new_taxable_income: res.newRegime.taxableIncome,
+          new_tax: res.newRegime.tax,
+          new_cess: res.newRegime.cess,
+          new_total_tax: res.newRegime.totalTax,
+          better_regime: res.betterRegime,
+          tax_savings: res.savings,
+        });
+
+        if (error) {
+          console.error("Error saving tax calculation:", error);
+        } else {
+          console.log("Tax calculation saved successfully");
+        }
+      } catch (err) {
+        console.error("Unexpected error saving tax calculation:", err);
+      }
+    }
   };
 
   const columns = [
