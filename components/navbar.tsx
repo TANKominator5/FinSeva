@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   Navbar as NextUINavbar,
@@ -12,14 +12,14 @@ import {
 import { Link } from "@nextui-org/link";
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from "react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 //import { Logo } from "@/components/icons";
-import { SessionContext } from '@/lib/usercontext';
+import { SessionContext } from "@/lib/usercontext";
 
 export const Navbar = () => {
   const session = useContext(SessionContext);
@@ -31,19 +31,26 @@ export const Navbar = () => {
     setIsLoggedIn(!!session);
   }, [session]);
 
-  const filteredNavItems = siteConfig.navItems.filter(item => 
-    !(isLoggedIn && (item.label === "Login" || item.label === "Signup")) &&
-    (isLoggedIn || (item.label !== "Dashboard" && item.label !== "Recommendations" && item.label !== "Logout" && item.label !== "Profile" && item.label !== "Summary"))
+  const filteredNavItems = siteConfig.navItems.filter(
+    (item) =>
+      !(isLoggedIn && (item.label === "Login" || item.label === "Signup")) &&
+      (isLoggedIn ||
+        (item.label !== "Dashboard" &&
+          item.label !== "Recommendations" &&
+          item.label !== "Tax Calculator" &&
+          item.label !== "Logout" &&
+          item.label !== "Profile" &&
+          item.label !== "Summary"))
   );
-  
+
   const filteredNavMenuItems = [
     ...filteredNavItems,
-    ...(isLoggedIn ? siteConfig.navMenuItems : [])
+    ...(isLoggedIn ? siteConfig.navMenuItems : []),
   ];
 
   return (
-    <NextUINavbar 
-      maxWidth="xl" 
+    <NextUINavbar
+      maxWidth="xl"
       position="sticky"
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
@@ -70,7 +77,7 @@ export const Navbar = () => {
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  "data-[active=true]:text-primary data-[active=true]:font-medium"
                 )}
                 color="foreground"
                 href={item.href}
@@ -113,4 +120,3 @@ export const Navbar = () => {
     </NextUINavbar>
   );
 };
-

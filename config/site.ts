@@ -21,6 +21,10 @@ export const siteConfig = {
       href: "/recommendation",
     },
     {
+      label: "Tax Calculator",
+      href: "/compareregime",
+    },
+    {
       label: "Login",
       href: "/login",
     },
